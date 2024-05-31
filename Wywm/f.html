@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Простой WYSIWYG Редактор</title>
+<style>
+  .editor-buttons {
+    margin-bottom: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1vh;
+  }
+  .editor {
+    border: 0px solid #ccc;
+    min-height: 200px;
+    padding: 10px;
+    background-color: rgb(255, 255, 255);
+    color: black;
+  }
+  body {
+    background-color: rgb(49, 50, 59);
+    color: white;
+    font-family: Arial, sans-serif;
+  }
+  button, select, input {
+    border: 0px solid;
+    background-color: rgb(101, 97, 128);
+    color: white;
+    height: 4vh;
+  }
+  select {
+    height: 4.8vh;
+  }
+  textarea {
+    width: 100%;
+    min-height: 100px;
+    margin-top: 10px;
+    background-color: rgb(101, 97, 128);
+    color: white;
+    border: 0px solid;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+</style>
+</head>
+<body>
+
+<div class="editor-buttons">
+  <button id="bold">Полужирный</button>
+  <button id="italic">Курсив</button>
+  <button id="underline">Подчеркнутый</button>
+  <button id="strikeThrough">Зачеркнутый</button>
+  <input type="color" id="foreColor" title="Цвет текста">
+  <input type="color" id="backColor" title="Цвет фона">
+  <button id="justifyLeft">По левому краю</button>
+  <button id="justifyCenter">По центру</button>
+  <button id="justifyRight">По правому краю</button>
+  <button id="justifyFull">По ширине</button>
+  <button id="insertOrderedList">Нумерованный список</button>
+  <button id="insertUnorderedList">Маркированный список</button>
+  <button id="insertImage">Картинка</button>
+  <button id="createLink">Ссылка</button>
+  <select id="formatBlock">
+    <option value="p">Параграф</option>
+    <option value="h1">Заголовок 1</option>
+    <option value="h2">Заголовок 2</option>
+    <option value="h3">Заголовок 3</option>
+  </select>
+  <button id="html">HTML-код</button>
+</div>
+
+<div class="editor" contenteditable="true" id="editor">
+  <p>Баклан</p>
+</div>
+
+<textarea id="html-code"></textarea>
+
+<script>
+  const editor = document.getElementById('editor');
+  const htmlCode = document.getElementById('html-code');
+
+  // Обновление HTML кода при изменении содержимого WYSIWYG контейнера
+  editor.addEventListener('input', function() {
+    htmlCode.value = editor.innerHTML;
+  });
+
+  // Обновление текста в WYSIWYG контейнере при изменении HTML кода
+  htmlCode.addEventListener('input', function() {
+    editor.innerHTML = htmlCode.value;
+  });
+
+  // Функции для кнопок редактора
+  document.getElementById('bold').addEventListener('click', function() {
+    document.execCommand('bold');
+  });
+
+  document.getElementById('italic').addEventListener('click', function() {
+    document.execCommand('italic');
+  });
+
+  document.getElementById('underline').addEventListener('click', function() {
+    document.execCommand('underline');
+  });
+
+  document.getElementById('strikeThrough').addEventListener('click', function() {
+    document.execCommand('strikeThrough');
+  });
+
+  document.getElementById('foreColor').addEventListener('input', function() {
+    document.execCommand('foreColor', false, this.value);
+  });
+
+  document.getElementById('backColor').addEventListener('input', function() {
+    document.execCommand('backColor', false, this.value);
+  });
+
+  document.getElementById('justifyLeft').addEventListener('click', function() {
+    document.execCommand('justifyLeft');
+  });
+
+  document.getElementById('justifyCenter').addEventListener('click', function() {
+    document.execCommand('justifyCenter');
+  });
+
+  document.getElementById('justifyRight').addEventListener('click', function() {
+    document.execCommand('justifyRight');
+  });
+
+  document.getElementById('justifyFull').addEventListener('click', function() {
+    document.execCommand('justifyFull');
+  });
+
+  document.getElementById('insertOrderedList').addEventListener('click', function() {
+    document.execCommand('insertOrderedList');
+  });
+
+  document.getElementById('insertUnorderedList').addEventListener('click', function() {
+    document.execCommand('insertUnorderedList');
+  });
+
+  document.getElementById('insertImage').addEventListener('click', function() {
+    const url = prompt('Введите URL картинки:');
+    if (url) {
+      document.execCommand('insertImage', false, url);
+    }
+  });
+
+  document.getElementById('createLink').addEventListener('click', function() {
+    const url = prompt('Введите URL ссылки:');
+    if (url) {
+      document.execCommand('createLink', false, url);
+    }
+  });
+
+  document.getElementById('formatBlock').addEventListener('change', function() {
+    document.execCommand('formatBlock', false, this.value);
+  });
+
+  document.getElementById('html').addEventListener('click', function() {
+    htmlCode.classList.toggle('visible');
+  });
+</script>
+
+</body>
+</html>

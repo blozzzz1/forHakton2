@@ -1,0 +1,26 @@
+* {
+    margin: 0;
+  }
+  
+  #text {
+    width: calc(100vw - 10);
+    min-height: 40px;
+    outline: 1px solid lightblue;
+    margin: 5px;
+  }
+  
+  .active {
+    background-color: lightblue;
+  }
+  
+  .boldi {
+    font-weight: bold;
+  }
+  
+  .cursiv {
+    font-style: italic;
+  }
+  
+  .underli {
+    text-decoration: underline;
+  }

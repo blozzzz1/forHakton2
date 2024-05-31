@@ -8,7 +8,7 @@
         <TextEditor v-model="textContent" />
       </div>
       <div class="html-container">
-        <div v-html="textContent"></div>
+        <pre>{{ textContent }}</pre>
       </div>
     </div>
   </div>
