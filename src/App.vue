@@ -11,11 +11,12 @@
       <button :class="{ active: isJustifyCenter }" @click="execCmd('justifyCenter')">По центру</button>
       <button :class="{ active: isJustifyRight }" @click="execCmd('justifyRight')">По правому краю</button>
       <button :class="{ active: isJustifyFull }" @click="execCmd('justifyFull')">По ширине</button>
-      <button @click="execCmd('insertOrderedList')">Нумерованный список</button>
-      <button @click="execCmd('insertUnorderedList')">Маркированный список</button>
+      <button :class="{ active: isOrderedList }" @click="execCmd('insertOrderedList')">Нумерованный список</button>
+      <button :class="{ active: isUnorderedList }" @click="execCmd('insertUnorderedList')">Маркированный список</button>
       <button @click="insertImage">Картинка</button>
       <button @click="createLink">Ссылка</button>
       <select v-model="formatBlock" @change="execCmd('formatBlock', formatBlock)">
+        <option value="">Формат p, h1...</option>
         <option value="p">Параграф</option>
         <option value="h1">Заголовок 1</option>
         <option value="h2">Заголовок 2</option>
@@ -41,7 +42,7 @@ export default {
       htmlContent: '',
       foreColor: '#000000',
       backColor: '#ffffff',
-      formatBlock: 'p',
+      formatBlock: '',
       isBold: false,
       isItalic: false,
       isUnderline: false,
@@ -49,7 +50,9 @@ export default {
       isJustifyLeft: false,
       isJustifyCenter: false,
       isJustifyRight: false,
-      isJustifyFull: false
+      isJustifyFull: false,
+      isOrderedList: false,
+      isUnorderedList: false,
     };
   },
   methods: {
@@ -104,6 +107,44 @@ export default {
       this.isJustifyCenter = document.queryCommandState('justifyCenter');
       this.isJustifyRight = document.queryCommandState('justifyRight');
       this.isJustifyFull = document.queryCommandState('justifyFull');
+      this.foreColor = this.rgbToHex(document.queryCommandValue('foreColor'));
+      this.backColor = this.rgbToHex(document.queryCommandValue('backColor'));
+      this.isOrderedList = document.queryCommandState('insertOrderedList');
+      this.isUnorderedList = document.queryCommandState('insertUnorderedList');
+      this.updateFormatBlock();
+    },
+    rgbToHex(rgb) {
+      if (!rgb) return '#000000';
+      const result = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/.exec(rgb);
+      return result ? "#" + ((1 << 24) + (parseInt(result[1]) << 16) + (parseInt(result[2]) << 8) + parseInt(result[3])).toString(16).slice(1).toUpperCase() : rgb;
+    },
+    updateFormatBlock() {
+      const selection = window.getSelection();
+      if (selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        const commonAncestorContainer = range.commonAncestorContainer.nodeType === 3
+          ? range.commonAncestorContainer.parentNode
+          : range.commonAncestorContainer;
+        
+        const parentElements = this.getParentElements(commonAncestorContainer);
+        const uniqueTags = new Set(parentElements.map(el => el.tagName.toLowerCase()));
+
+        if (uniqueTags.size === 1) {
+          this.formatBlock = uniqueTags.values().next().value;
+        } else {
+          this.formatBlock = '';
+        }
+      }
+    },
+    getParentElements(element) {
+      const parentElements = [];
+      while (element) {
+        if (['p', 'h1', 'h2', 'h3'].includes(element.tagName.toLowerCase())) {
+          parentElements.push(element);
+        }
+        element = element.parentElement;
+      }
+      return parentElements;
     }
   }
 };
