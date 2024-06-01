@@ -1,48 +1,129 @@
 <template>
   <div>
     <div class="editor-buttons">
-      <button :class="{ active: isBold }" @click="execCmd('bold')">Полужирный</button>
-      <button :class="{ active: isItalic }" @click="execCmd('italic')">Курсив</button>
-      <button :class="{ active: isUnderline }" @click="execCmd('underline')">Подчеркнутый</button>
-      <button :class="{ active: isStrikeThrough }" @click="execCmd('strikeThrough')">Зачеркнутый</button>
-      <input type="color" v-model="foreColor" @input="execCmd('foreColor', foreColor)" title="Цвет текста">
-      <input type="color" v-model="backColor" @input="execCmd('backColor', backColor)" title="Цвет фона">
-      <button :class="{ active: isJustifyLeft }" @click="execCmd('justifyLeft')">По левому краю</button>
-      <button :class="{ active: isJustifyCenter }" @click="execCmd('justifyCenter')">По центру</button>
-      <button :class="{ active: isJustifyRight }" @click="execCmd('justifyRight')">По правому краю</button>
-      <button :class="{ active: isJustifyFull }" @click="execCmd('justifyFull')">По ширине</button>
-      <button :class="{ active: isOrderedList }" @click="execCmd('insertOrderedList')">Нумерованный список</button>
-      <button :class="{ active: isUnorderedList }" @click="execCmd('insertUnorderedList')">Маркированный список</button>
-      <button @click="insertImage">Картинка</button>
-      <button @click="createLink">Ссылка</button>
-      <select v-model="formatBlock" @change="execCmd('formatBlock', formatBlock)">
-        <option value="">Формат p, h1...</option>
-        <option value="p">Параграф</option>
-        <option value="h1">Заголовок 1</option>
-        <option value="h2">Заголовок 2</option>
-        <option value="h3">Заголовок 3</option>
-      </select>
-      <button @click="toggleHtml">HTML-код</button>
+      <div class="btn-group">
+        <div class="btn-wrapper" :class="{ active: isBold }">
+          <button @mousedown.prevent="execCmd('bold')"> <font-awesome-icon :icon="['fas', 'bold']" /></button>
+        </div>
+        <div class="btn-wrapper" :class="{ active: isItalic }">
+          <button @mousedown.prevent="execCmd('italic')"> <font-awesome-icon :icon="['fas', 'italic']" /></button>
+        </div>
+        <div class="btn-wrapper" :class="{ active: isUnderline }">
+          <button @mousedown.prevent="execCmd('underline')"> <font-awesome-icon :icon="['fas', 'underline']" /></button>
+        </div>
+        <div class="btn-wrapper" :class="{ active: isStrikeThrough }">
+          <button @mousedown.prevent="execCmd('strikeThrough')"> <font-awesome-icon
+              :icon="['fas', 'strikethrough']" /></button>
+        </div>
+      </div>
+      <div class="btn-group">
+        <div class="btn-wrapper">
+
+          <font-awesome-icon :icon="['fas', 'font']" />
+          <input type="color" v-model="foreColor" @input="execCmd('foreColor', foreColor)" title="Цвет текста">
+
+        </div>
+
+        <div class="btn-wrapper">
+          <font-awesome-icon :icon="['fas', 'highlighter']" />
+          <input type="color" v-model="backColor" @input="execCmd('backColor', backColor)" title="Цвет фона">
+        </div>
+      </div>
+      <div class="btn-group">
+        <div class="btn-wrapper" :class="{ active: isJustifyLeft }">
+          <button @mousedown.prevent="execCmd('justifyLeft')"> <font-awesome-icon
+              :icon="['fas', 'align-left']" /></button>
+        </div>
+        <div class="btn-wrapper" :class="{ active: isJustifyCenter }">
+          <button @mousedown.prevent="execCmd('justifyCenter')"> <font-awesome-icon
+              :icon="['fas', 'align-center']" /></button>
+        </div>
+        <div class="btn-wrapper" :class="{ active: isJustifyRight }">
+          <button @mousedown.prevent="execCmd('justifyRight')"><font-awesome-icon
+              :icon="['fas', 'align-right']" /></button>
+        </div>
+        <div class="btn-wrapper" :class="{ active: isJustifyFull }">
+          <button @mousedown.prevent="execCmd('justifyFull')"> <font-awesome-icon
+              :icon="['fas', 'align-justify']" /></button>
+        </div>
+      </div>
+      <div class="btn-group">
+        <div class="btn-wrapper" :class="{ active: isOrderedList }">
+          <button @mousedown.prevent="execCmd('insertOrderedList')"> <font-awesome-icon
+              :icon="['fas', 'list-ol']" /></button>
+        </div>
+        <div class="btn-wrapper" :class="{ active: isUnorderedList }">
+          <button @mousedown.prevent="execCmd('insertUnorderedList')">
+            <font-awesome-icon :icon="['fas', 'list-ul']" /></button>
+        </div>
+      </div>
+      <div class="btn-group">
+        <div class="btn-wrapper">
+          <button @mousedown.prevent="insertImage"><font-awesome-icon :icon="['fas', 'image']" /> </button>
+        </div>
+        <div class="btn-wrapper">
+          <button @mousedown.prevent="createLink"><font-awesome-icon :icon="['fas', 'link']" /></button>
+        </div>
+      </div>
+      <div class="btn-group">
+        <div class="btn-wrapper">
+
+          <font-awesome-icon :icon="['fas', 'heading']" />
+          <select v-model="formatBlock" @change="execCmd('formatBlock', formatBlock)">
+            <option value="p" selected>p</option>
+            <option value="h1">h1</option>
+            <option value="h2">h2</option>
+            <option value="h3">h3</option>
+          </select>
+        </div>
+      </div>
+      <div class="btn-group">
+        <div class="btn-wrapper" :class="{ modeActive: displayMode === 'below' }">
+          <button @mousedown.prevent="toggleDisplayMode('below')">
+            <font-awesome-icon :icon="['fas', 'table-columns']" :style="{ transform: 'rotate(270deg)' }" /></button>
+        </div>
+        <div class="btn-wrapper" :class="{ modeActive: displayMode === 'side' }">
+          <button @mousedown.prevent="toggleDisplayMode('side')">
+            <font-awesome-icon :icon="['fas', 'table-columns']" /></button>
+        </div>
+      </div>
+      <div class="btn-group">
+        <div class="btn-wrapper">
+          <button @mousedown.prevent="clearFormatting"><font-awesome-icon :icon="['fas', 'eraser']" /></button>
+        </div>
+      </div>
+
     </div>
 
-    <div class="editor" contenteditable="true" ref="editor" @input="updateHtml" @mouseup="updateState" @keyup="updateState" v-show="!showHtml">
-      <p>Введите текст...</p>
+    <div class="editor-container" :class="displayMode">
+      <div class="editor " contenteditable="true" ref="editor" @input="updateHtml" @mouseup="updateState"
+        @keyup="updateState">
+        <p>Введите текст...</p>
+      </div>
+      <textarea class="html-edit" v-model="htmlContent" v-show="displayMode !== 'hidden'"
+        @input="updateEditor"></textarea>
+    </div>
+    <div class="btn-group">
+      <div class="btn-wrapper">
+        <button @click="saveHtml">Сохранить как HTML</button>
+      </div>
     </div>
 
-    <textarea v-model="htmlContent" v-show="showHtml"></textarea>
-    <button @click="saveHtml">Сохранить как HTML</button>
+
   </div>
 </template>
 
+<script src="https://kit.fontawesome.com/66e9e352b6.js" crossorigin="anonymous"></script>
 <script>
 export default {
   data() {
     return {
-      showHtml: false,
+      showHtml: false, // Скрываем HTML по умолчанию
       htmlContent: '',
       foreColor: '#000000',
       backColor: '#ffffff',
       formatBlock: '',
+      displayMode: 'hidden', // Режим по умолчанию - скрыт
       isBold: false,
       isItalic: false,
       isUnderline: false,
@@ -66,13 +147,8 @@ export default {
     formatHtml(input) {
       return input.replace(/></g, '>\n<');
     },
-    toggleHtml() {
-      this.showHtml = !this.showHtml;
-      if (!this.showHtml) {
-        this.$refs.editor.innerHTML = this.htmlContent;
-      } else {
-        this.htmlContent = this.formatHtml(this.$refs.editor.innerHTML);
-      }
+    toggleDisplayMode(mode) {
+      this.displayMode = this.displayMode === mode ? 'hidden' : mode;
     },
     insertImage() {
       const url = prompt('Введите URL картинки:');
@@ -97,6 +173,10 @@ export default {
       a.href = URL.createObjectURL(blob);
       a.download = 'editor-content.html';
       a.click();
+    },
+    clearFormatting() {
+      document.execCommand('removeFormat', false, null);
+      this.updateHtml();
     },
     updateState() {
       this.isBold = document.queryCommandState('bold');
@@ -125,7 +205,7 @@ export default {
         const commonAncestorContainer = range.commonAncestorContainer.nodeType === 3
           ? range.commonAncestorContainer.parentNode
           : range.commonAncestorContainer;
-        
+
         const parentElements = this.getParentElements(commonAncestorContainer);
         const uniqueTags = new Set(parentElements.map(el => el.tagName.toLowerCase()));
 
@@ -145,53 +225,148 @@ export default {
         element = element.parentElement;
       }
       return parentElements;
+    },
+    updateEditor() {
+      this.$refs.editor.innerHTML = this.htmlContent;
     }
   }
 };
 </script>
 
 <style>
+body {
+  margin: 0;
+}
+
 .editor-buttons {
-  margin-bottom: 10px;
+  padding: 30px 60px;
   display: flex;
   flex-wrap: wrap;
-  gap: 1vh;
+  font-size: 20px;
+
+
 }
+
+.btn-group:first-child {
+  border-left: 1px solid #A9B9CA;
+}
+
+.btn-group:nth-last-of-type(1) {
+  border-right: 1px solid #A9B9CA;
+}
+
+.editor-buttons * {
+
+  font-size: 20px;
+}
+
+.select-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.select-wrapper select {
+  margin-left: 5px;
+}
+
+.editor-container {
+  display: flex;
+  flex-direction: column;
+  background-color: #A9B9CA;
+  padding: 60px;
+  gap: 40px;
+}
+
+.editor-container>* {
+  padding: 20px;
+}
+
+.editor-container.side {
+  flex-direction: row;
+}
+
 .editor {
-  border: 0px solid #ccc;
+  border-radius: 23px;
+  border: 0px;
   min-height: 200px;
-  padding: 10px;
+
   background-color: rgb(255, 255, 255);
   color: black;
+  flex: 1;
 }
+
 body {
-  background-color: rgb(49, 50, 59);
+  background-color: #fff;
   color: white;
   font-family: Arial, sans-serif;
 }
-button, select, input {
+
+.btn-group {
+  display: flex;
+  padding: 0 40px;
+  gap: 9px;
+}
+
+
+.btn-group+.btn-group {
+  border-left: 1px solid #A9B9CA;
+}
+
+.btn-wrapper {
+  padding: 2px;
   border: 0px solid;
-  background-color: rgb(101, 97, 128);
-  color: white;
-  height: 4vh;
+  color: #122C4F;
+  background-color: #FFF;
+  transition: background .3s;
+  border-radius: 5px;
 }
-select {
-  height: 4vh;
+
+.btn-wrapper>* {
+  color: #122C4F;
+  background-color: unset;
+  border: 0px solid;
+
 }
-textarea {
+
+.btn-wrapper:hover,
+.btn-wrapper *:hover {
+  cursor: pointer;
+  background-color: #A9B9CA;
+}
+
+.btn-wrapper *:hover {
+  cursor: pointer;
+  background-color: unset;
+}
+
+.btn-wrapper.active,
+.btn-wrapper.modeActive {
+  background-color: #A9B9CA;
+}
+
+
+button,
+select,
+input {
+  height: 100%;
+}
+
+
+.html-edit {
+  border-radius: 23px;
   width: 100%;
   min-height: 500px;
-  margin-top: 10px;
-  background-color: rgb(101, 97, 128);
-  color: white;
+  background-color: rgb(255, 255, 255);
+  color: black;
   border: 0px solid;
-  padding: 10px;
   box-sizing: border-box;
+  flex: 1;
 }
-#save-html {
-  margin-top: 10px;
-}
-button.active {
-  background-color: rgb(150, 150, 200);
+
+.editor-container.below .html-edit {}
+
+.editor-container.side .html-edit {
+  width: 50%;
+
 }
 </style>
